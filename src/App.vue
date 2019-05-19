@@ -23,6 +23,9 @@ import addPhoto from '@/page/personalCenter/addPhoto/addPhoto'
 import album from '@/page/album/album'
 import albumClass from '@/page/album/albumClass'
 import leaveMessage from '@/page/leaveMessage/leaveMessage'
+import personOutInfo from '@/page/homePage/personOutInfo/personOutInfo'
+import visitCenter from '@/page/homePage/visitCenter/visitCenter'
+import editPassword from '@/page/personalCenter/editPassword/editPassword'
 
 export default {
   name: 'App',
@@ -30,7 +33,7 @@ export default {
     signUp,signIn,homePage,blog,personalCenter,newBlogList,
     personData,allBlogList,blogCategory,allAlbumList,albumCategory,
     myComment,myParticipate,addBlog,addPhoto,album,albumClass,
-    leaveMessage,
+    leaveMessage,personOutInfo,visitCenter,editPassword
   }
 }
 </script>

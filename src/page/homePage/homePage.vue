@@ -3,7 +3,7 @@
   <div class="container">
     <!--3.标签式展现数据-->
     <navBar></navBar>
-    <el-row>
+    <el-row :gutter="20">
       <!--左边区域-->
       <el-col :span="8">
         <!--相册，日志，留言数量-->
@@ -27,7 +27,9 @@
         <div class="panel panel-warning">
           <div class="panel-heading" style="height: 20px">
             <span style="float: left">个人档</span>
-            <b style="float: right">个人信息</b>
+            <b style="float: right">
+              <router-link :to="`/${$route.params.id}`+'/personOutInfo'">个人信息</router-link>
+            </b>
           </div>
           <div class="panel-body">
             <div class="userInfoArea">
@@ -50,7 +52,9 @@
             <b>最近访客</b>
           </div>
           <div class="panel-body">
-            <h1>访客信息</h1>
+            <router-link :to="`${$route.params.id}`+'/visitCenter'">
+              <h1>访客信息</h1>
+            </router-link>
           </div>
           <!--访客量-->
           <div class="panel-body" style="padding: 0 0 15px 0">

@@ -20,6 +20,22 @@ export default [
     name:'homePage',
     component:App.components.homePage
   },
+  //点击主页上的个人资时跳转的页面
+  {
+    path:'/:id/personOutInfo',
+    name:'personOutInfo',
+    component:App.components.personOutInfo
+  },
+  //点击主页上的更多访客时跳转的页面
+  {
+    path:'/:id/visitCenter',
+    component:App.components.visitCenter
+  },
+  //修改密码页面路由
+  {
+    path:'/:id/editPassword',
+    component:App.components.editPassword
+  },
   //日志及其子路由
   {
     path:'/:id/blog',

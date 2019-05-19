@@ -43,6 +43,9 @@
         },
       }
     },
+    created(){
+      sessionStorage.setItem("token",'');
+    },
     methods:{
       //点击登录执行方法
       dologin(){
