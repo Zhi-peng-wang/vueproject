@@ -12,3 +12,21 @@ export const headMsg = data => ajax('/api/headMsg',data,"POST");
 
 //3.主页中个人档信息
 export const getSimpleInfo = data=>ajax('/api/getSimpleInfo',data,"POST");
+
+//4.得到一级二级分类
+export const listAllCategory = data =>ajax('/api/listAllCategory',data,"POST");
+
+//5.获得全部的日志数据
+// export const
+
+
+
+
+
+
+
+
+
+
+
+

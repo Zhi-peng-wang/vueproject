@@ -14,14 +14,14 @@
           </p>
         </el-menu-item>
         <el-menu-item index="5" class="rightItem">
-          <router-link :to="`/${$route.params.id}`+'/home_page'">
+          <router-link :to="`/${$route.params.id}`+'/personalCenter'">
             <el-dropdown>
                   <p class="el-dropdown-link" style="margin: -4px 0 0 0">
                     {{nickname}}<i class="el-icon-arrow-down el-icon--right" style="margin:-3px 0px 0px -3px"></i>
                   </p>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item>
-                  <router-link :to="`/${$route.params.id}`+'/home_page'">个人中心</router-link>
+                  <router-link :to="`/${$route.params.id}`+'/personalCenter'">个人中心</router-link>
                 </el-dropdown-item>
                 <el-dropdown-item>
                   <router-link :to="`/${$route.params.id}`+'/editPassword'">修改密码</router-link>
@@ -38,7 +38,7 @@
           <router-link :to="`/${$route.params.id}`+'/blog'">日志</router-link>
         </el-menu-item>
         <el-menu-item index="2" class="rightItem">
-          <router-link :to="`/${$route.params.id}`+'/album/photo_class'">相册</router-link>
+          <router-link :to="`/${$route.params.id}`+'/album'">相册</router-link>
         </el-menu-item>
         <el-menu-item index="1"  class="rightItem">
           <router-link :to="`/${$route.params.id}`+'/homePage'">主页</router-link>

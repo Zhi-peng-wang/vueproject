@@ -19,5 +19,105 @@ export default [
     path:'/:id/homePage',
     name:'homePage',
     component:App.components.homePage
+  },
+  //日志及其子路由
+  {
+    path:'/:id/blog',
+    name:'blog',
+    component:App.components.blog,
+    meta: {
+      requiresAuth: true      // 要求验证的页面,在此情况下其子页面也会被验证.
+    },
+    children:[
+      {
+        path:'',
+        component:App.components.newBlogList
+      }
+    ]
+  },
+  //个人中心及其子页面
+  {
+    path:'/:id/personalCenter',
+    name:'personalCenter',
+    component:App.components.personalCenter,
+    meta: {
+      requiresAuth: true      // 要求验证的页面,在此情况下其子页面也会被验证.
+    },
+    children: [
+      //个人中心下默认显示的二级路由
+      {
+        path:'',
+        component:App.components.personData
+      },
+      //个人资料路由
+      {
+        path:'personData',
+        component:App.components.personData
+      },
+      //日志列表路由
+      {
+        path:'allBlogList',
+        component:App.components.allBlogList
+      },
+      //日志类别路由
+      {
+        path:'blogCategory',
+        component:App.components.blogCategory
+      },
+      //相册列表路由
+      {
+        path:'allAlbumList',
+        component:App.components.allAlbumList
+      },
+      //相册类别路由
+      {
+        path:'albumCategory',
+        component:App.components.albumCategory
+      },
+      //我评论的路由
+      {
+        path:'myComment',
+        component:App.components.myComment
+      },
+      //我参与的路由
+      {
+        path:'myParticipate',
+        component:App.components.myParticipate
+      },
+      //添加日志
+      {
+        path:'addBlog',
+        component:App.components.addBlog
+      },
+      //添加相片
+      {
+        path:'addPhoto',
+        component:App.components.addPhoto
+      }
+    ]
+  },
+  //相册页面
+  {
+    path:'/:id/album',
+    component:App.components.album,
+    meta: {
+      requiresAuth: true      // 要求验证的页面,在此情况下其子页面也会被验证.
+    },
+    children:[
+      //相册二级分类
+      {
+        path:'',
+        component:App.components.albumClass
+      }
+    ]
+  },
+  //留言页面
+  {
+    path:'/:id/leaveMessage',
+    component:App.components.leaveMessage
   }
 ]
+
+
+
+

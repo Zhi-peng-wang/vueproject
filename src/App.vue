@@ -8,11 +8,29 @@
 import signIn from '@/page/signIn'
 import signUp from '@/page/signUp'
 import homePage from '@/page/homePage/homePage'
+import blog from '@/page/blog/blog'
+import personalCenter from '@/page/personalCenter/personalCenter'
+import newBlogList from '@/page/blog/newBlogList'
+import personData from '@/page/personalCenter/personData/personData'
+import allBlogList from '@/page/personalCenter/personBlog/allBlogList'
+import blogCategory from '@/page/personalCenter/personBlog/blogCategory'
+import allAlbumList from '@/page/personalCenter/personAlbum/allAlbumList'
+import albumCategory from '@/page/personalCenter/personAlbum/albumCategory'
+import myComment from '@/page/personalCenter/myComment/myComment'
+import myParticipate from '@/page/personalCenter/myParticipate/myParticipate'
+import addBlog from '@/page/personalCenter/addBlog/addBlog'
+import addPhoto from '@/page/personalCenter/addPhoto/addPhoto'
+import album from '@/page/album/album'
+import albumClass from '@/page/album/albumClass'
+import leaveMessage from '@/page/leaveMessage/leaveMessage'
 
 export default {
   name: 'App',
   components: {
-    signUp,signIn,homePage
+    signUp,signIn,homePage,blog,personalCenter,newBlogList,
+    personData,allBlogList,blogCategory,allAlbumList,albumCategory,
+    myComment,myParticipate,addBlog,addPhoto,album,albumClass,
+    leaveMessage,
   }
 }
 </script>

@@ -93,6 +93,10 @@
     components: {
       navBar
     },
+    created(){
+      //修改vuex中的导航栏默认激活的值
+      this.$store.commit('activeNav', "1");
+    },
   //  数据区域
     data(){
       return{
