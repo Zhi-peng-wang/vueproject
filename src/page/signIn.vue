@@ -30,12 +30,13 @@
   //   btnId:"qqLoginBtn"
   // });
   //导入接口
+  import {loginVerify} from "../api";
 
   export default {
     data(){
       return{
-        username:"",
-        password:"",
+        username:"742349899@qq.com",
+        password:"qqq111",
         note: {
           backgroundImage: "url(" + require("../assets/signIn.jpg") + ")",
           backgroundRepeat: "no-repeat",
@@ -48,7 +49,7 @@
         //准备数据
         let data={'username':this.username,'password':this.password};
         //接口执行
-        login(data)
+        loginVerify(data)
           .then(res=>{
             console.log(res);
             //localStorage 存下userid
@@ -59,13 +60,15 @@
             //将localStorage中userid存在vuex中
             this.$store.state.loginUser=localStorage.getItem("loginUser");
             console.log("打印vuex里面的userid:"+this.$store.state.loginUser);
+            //id指向下方路由跳转的地方
+            let id = this.$store.state.loginUser;
             if (res.status===200){
               this.$message({
                 message: '登录成功!',
                 type: 'success',
                 showClose:true
               });
-              this.$router.push(`/${id}/home`)
+              this.$router.push(`/${id}/homePage`)
             }
           })
           .catch(error=>{

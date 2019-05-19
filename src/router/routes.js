@@ -13,5 +13,11 @@ export default [
     path:'/signUp',
     name:'signUp',
     component:App.components.signUp
+  },
+  //主页
+  {
+    path:'/:id/homePage',
+    name:'homePage',
+    component:App.components.homePage
   }
 ]

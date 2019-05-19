@@ -25,6 +25,7 @@ axios.interceptors.request.use(config => {
 
 // "响应" 拦截器即异常处理
 axios.interceptors.response.use(response => {
+  // console.log(response);
   // 获取token并把token放在sessionStorage中,根据实际需求选择存储方式即可
   let list = response.data.object;      // 根据实际数据结构取得返回的token
   if (list.hasOwnProperty("token")) {

@@ -122,7 +122,7 @@
             console.log(data);
             console.log("下面执行注册接口");
             //执行接口
-            axios.post("/api/register", data)
+            axios.post("/api/registerUser", data)
               .then(res => {
                 console.log(res.data);
                 if (res.data.status===200){
