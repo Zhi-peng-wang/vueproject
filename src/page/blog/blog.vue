@@ -13,11 +13,11 @@
               </template>
               <el-menu active-text-color="#ffd04b" class="el-menu-vertical-demo"
                        uniqueOpened>
-                <el-submenu v-for="(t1,index) in listCategoryA" :index="t1.CategoryID">
+                <el-submenu v-for="(t1,index) in listCategoryA" :key="index" :index="t1.CategoryID">
                   <template slot="title">
                     <span style="display: block">{{t1.CategoryName}}</span>
                   </template>
-                  <el-menu-item-group v-for="(t2,index) in listCategoryB"  v-if="t1.CategoryID==t2.ParentID">
+                  <el-menu-item-group v-for="(t2,index) in listCategoryB" :key="index"  v-if="t1.CategoryID==t2.ParentID">
                     <el-menu-item :key="index">
                       <router-link :to="{path:`/${$route.params.id}`+'/blog/blog_list',query:{classid:t2.classid}}"
                       >

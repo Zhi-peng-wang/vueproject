@@ -16,9 +16,11 @@ export const getSimpleInfo = data=>ajax('/api/getSimpleInfo',data,"POST");
 //4.得到一级二级分类
 export const listAllCategory = data =>ajax('/api/listAllCategory',data,"POST");
 
-//5.获得全部的日志数据
-// export const
+//5.添加日志/相册
+export const insertContent = data =>ajax('/api/insertContent',data,"POST");
 
+//6.添加分类
+export const insertCategory =data =>ajax('/api/insertCategory',data,"POST");
 
 
 
