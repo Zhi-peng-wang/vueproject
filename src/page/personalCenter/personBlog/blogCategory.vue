@@ -73,6 +73,8 @@
             listCategoryOne:[],        //一级分类数组
             listCategoryTwo:[],         //二级分类数组
             listCateTwoByCateOne:[],    //根据点击一级分类过滤出相应的二级分类
+            categoryOneId:"",           //一级分类的id
+            categoryTwoId:"",           //二级分类的id
             categoryOne: {
               OrderCategoryOne:"",
               CategoryOneName:"",
@@ -103,12 +105,12 @@
         },
       mounted(){
         this.categoryOne.OrderCategoryOne=sessionStorage.getItem("sOrderCategoryOne");
-        this.categoryOne.CategoryOneName=sessionStorage.getItem("sAclassName");
-        this.blogClassAId=sessionStorage.getItem("sAclassId");
+        this.categoryOne.CategoryOneName=sessionStorage.getItem("sOneCategoryName");
+        this.categoryOneId=sessionStorage.getItem("sCategoryOneId");
 
         this.categoryTwo.OrderCategoryTwo=sessionStorage.getItem("sOrderCategoryTwo");
-        this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sBclassName");
-        this.blogClassBId=sessionStorage.getItem("sBclassId");
+        this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sTwoCategoryName");
+        this.categoryTwoId=sessionStorage.getItem("sCategoryTwoId");
 
         //为了得到分类的数据，准备数据
         let data={
@@ -196,7 +198,7 @@
               console.log(res);
               if (true){
                 sessionStorage.setItem("sOrderCategoryOne", this.categoryOne.OrderCategoryOne);
-                sessionStorage.setItem("sAclassName", this.categoryOne.CategoryOneName);
+                sessionStorage.setItem("sOneCategoryName", this.categoryOne.CategoryOneName);
                 this.$message({
                   showClose: true,
                   message: '添加成功！',
@@ -204,7 +206,7 @@
                 });
                 this.reload();
               }
-              if (res.status==400){
+              if (res.status===400){
                 this.$message({
                   showClose: true,
                   message: '一级分类名称已存在，请重新添加！',
@@ -261,7 +263,7 @@
           let data={
             userid: localStorage.getItem("loginUser"),
             classname:this.categoryTwo.CategoryTwoName,
-            parentid:this.blogClassAId,
+            parentid:this.categoryOneId,
             orderclass:this.categoryTwo.OrderCategoryTwo,
             depth:"2",
             url:this.categoryTwo.CategoryTwoName,
@@ -273,7 +275,7 @@
               console.log(res);
               if (res.status==200){
                 sessionStorage.setItem("sOrderCategoryTwo", this.categoryTwo.OrderCategoryTwo);
-                sessionStorage.setItem("sBclassName", this.categoryTwo.CategoryTwoName);
+                sessionStorage.setItem("sTwoCategoryName", this.categoryTwo.CategoryTwoName);
                 this.$message({
                   showClose: true,
                   message: '添加成功！',
@@ -293,8 +295,8 @@
               console.log(err);
             });
         },
-        sendCategoryOneId([categoryId,OrderCategoryOne,className,obj]){
-          console.log("一级分类被点击"+classid);
+        sendCategoryOneId([categoryId,OrderCategoryOne,categoryName,obj]){
+          console.log("一级分类被点击"+categoryId);
           console.log(obj);
           this.selectedOption=obj;
           this.categoryTwo.OrderCategoryTwo="";
@@ -303,46 +305,41 @@
           sessionStorage.setItem("sOrderCategoryOne", OrderCategoryOne);
           this.categoryOne.OrderCategoryOne=sessionStorage.getItem("sOrderCategoryOne");
 
-          sessionStorage.setItem("sAclassName", className);
-          this.categoryOne.CategoryOneName=sessionStorage.getItem("sAclassName");
+          sessionStorage.setItem("sOneCategoryName", categoryName);
+          this.categoryOne.CategoryOneName=sessionStorage.getItem("sOneCategoryName");
 
-          sessionStorage.setItem("sAclassId", classid);
-          this.blogClassAId=sessionStorage.getItem("sAclassId");
+          sessionStorage.setItem("sCategoryOneId", classid);
+          this.categoryOneId=sessionStorage.getItem("sCategoryOneId");
 
           sessionStorage.setItem("sAobj", obj);
           this.selectedOption=sessionStorage.getItem("sAobj");
-          // sessionStorage.setItem("sOrderCategoryTwo", "");
-          // sessionStorage.setItem("sBclassName", "");
-          // sessionStorage.setItem("sBclassId", "");
-          this.blog_url_2_2=[];
-          this.blog_url_2.find(item=>{
-            for (let i=0;i<this.blog_url_2.length;i++){
-              if(classid===item.parentid){
-                if (!~this.blog_url_2_2.indexOf(item)) {
-                  this.blog_url_2_2.push(item)
+
+          this.listCateTwoByCateOne=[];
+          this.listCategoryTwo.find(item=>{
+            for (let i=0;i<this.listCategoryTwo.length;i++){
+              if(categoryId===item.ParentID){
+                if (!~this.listCateTwoByCateOne.indexOf(item)) {
+                  this.listCateTwoByCateOne.push(item)
                 }
               }
             }
           });
-          console.log(this.blog_url_2_2);
+          console.log(this.listCateTwoByCateOne);
           // this.reload()
         },
-        sendCategoryTwoId([categoryId,OrderCategoryTwo,className]){
-          console.log("二级分类被点击"+classid);
-          this.blogClassBId=classid;
+        sendCategoryTwoId([categoryId,OrderCategoryTwo,categoryName]){
+          console.log("二级分类被点击"+categoryId);
+          this.categoryTwoId=categoryId;
           this.categoryTwo.OrderCategoryTwo=OrderCategoryTwo;
-          this.categoryTwo.CategoryTwoName=className;
+          this.categoryTwo.CategoryTwoName=categoryName;
 
           //使用session存储
           sessionStorage.setItem("sOrderCategoryTwo", OrderCategoryTwo);
           this.categoryTwo.OrderCategoryTwo=sessionStorage.getItem("sOrderCategoryTwo");
-          sessionStorage.setItem("sBclassName", className);
-          this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sBclassName");
-          sessionStorage.setItem("sBclassId", classid);
-          this.blogClassBId=sessionStorage.getItem("sBclassId");
-
-          // sessionStorage.setItem("sBobj", obj);
-          // this.selectedOption=sessionStorage.getItem("sBobj");
+          sessionStorage.setItem("sTwoCategoryName", categoryName);
+          this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sTwoCategoryName");
+          sessionStorage.setItem("sCategoryTwoId", classid);
+          this.categoryTwoId=sessionStorage.getItem("sCategoryTwoId");
         },
         // 一级栏目删除弹框
         confirmDeleteCategoryOne(categoryOne){
@@ -386,14 +383,14 @@
         },
         // 一级栏目删除点击事件
         deleteCategoryOne(){
-          deleteClass({classid:this.blogClassAId})
+          deleteClass({categoryId:this.categoryOneId})
             .then(res=>{
               console.log("一级分类删除按钮被点击");
               console.log(res);
               if (res.status==200){
                 sessionStorage.setItem("sOrderCategoryOne", "");
-                sessionStorage.setItem("sAclassName", "");
-                sessionStorage.setItem("sAclassId", "");
+                sessionStorage.setItem("sOneCategoryName", "");
+                sessionStorage.setItem("sOneCategoryId", "");
                 this.$message({
                   showClose: true,
                   message: '删除成功！',
@@ -455,13 +452,12 @@
         // 二级栏目删除点击事件
         deleteCategoryTwo(){
           console.log("二级分类删除按钮被点击");
-          deleteClass({classid:this.blogClassBId})
+          deleteClass({categoryId:this.categoryTwoId})
             .then(res=>{
               console.log(res);
               if (res.status==200){
                 sessionStorage.setItem("sOrderCategoryTwo", "");
-                sessionStorage.setItem("sBclassName", "");
-                sessionStorage.setItem("sBclassId", "");
+                sessionStorage.setItem("sTwoCategoryName", "");
                 this.$message({
                   showClose: true,
                   message: '删除成功！',
@@ -523,7 +519,7 @@
         // 一级栏目编辑点击事件
         editCategoryOne(){
           let data={
-            classid:this.blogClassAId,
+            categoryId:this.categoryOneId,
             orderclass:this.categoryOne.OrderCategoryOne,
             classname:this.categoryOne.CategoryOneName
           };
@@ -539,11 +535,11 @@
                 sessionStorage.setItem("sOrderCategoryOne", this.categoryOne.OrderCategoryOne);
                 this.categoryOne.OrderCategoryOne=sessionStorage.getItem("sOrderCategoryOne");
 
-                sessionStorage.setItem("sAclassName",this.categoryOne.CategoryOneName);
-                this.categoryOne.CategoryOneName=sessionStorage.getItem("sAclassName");
+                sessionStorage.setItem("sOneCategoryName",this.categoryOne.CategoryOneName);
+                this.categoryOne.CategoryOneName=sessionStorage.getItem("sOneCategoryName");
 
-                sessionStorage.setItem("sAclassId", this.blogClassAId);
-                this.blogClassAId=sessionStorage.getItem("sAclassId");
+                sessionStorage.setItem("sCategoryOneId", this.categoryOneId);
+                this.categoryOneId=sessionStorage.getItem("sCategoryOneId");
 
                 sessionStorage.setItem("sAobj", this.selectedOption);
                 this.selectedOption=sessionStorage.getItem("sAobj");
@@ -562,7 +558,7 @@
             });
 
         },
-        // 二级栏目添加弹框
+        //二级栏目编辑弹框
         confirmEditCategoryTwo(categoryTwo){
           this.$refs[categoryTwo].validate((valid) => {
             if (valid) {
@@ -604,7 +600,7 @@
         // 二级栏目编辑点击事件
         editCategoryTwo(){
           let data={
-            classid:this.blogClassBId,
+            categoryId:this.categoryTwoId,
             orderclass:this.categoryTwo.OrderCategoryTwo,
             classname:this.categoryTwo.CategoryTwoName
           };
@@ -620,11 +616,11 @@
                 sessionStorage.setItem("sOrderCategoryTwo", this.categoryTwo.OrderCategoryTwo);
                 this.categoryTwo.OrderCategoryTwo=sessionStorage.getItem("sOrderCategoryTwo");
 
-                sessionStorage.setItem("sBclassName",this.categoryTwo.CategoryTwoName);
-                this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sBclassName");
+                sessionStorage.setItem("sTwoCategoryName",this.categoryTwo.CategoryTwoName);
+                this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sTwoCategoryName");
 
-                sessionStorage.setItem("sBclassId", this.blogClassBId);
-                this.blogClassBId=sessionStorage.getItem("sBclassId");
+                sessionStorage.setItem("sCategoryTwoId", this.categoryTwoId);
+                this.categoryTwoId=sessionStorage.getItem("sCategoryTwoId");
 
                 sessionStorage.setItem("sBobj", this.selectedOption);
                 this.selectedOption=sessionStorage.getItem("sBobj");
