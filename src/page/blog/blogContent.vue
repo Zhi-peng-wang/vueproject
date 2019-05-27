@@ -32,23 +32,23 @@
         <!--评论与回复的展示区域-->
         <div>
           <el-row v-for="(c,index) in blogComment" :key="index">
-
             <!--评论的头像显示区域-->
             <el-col :span="4" style="padding-bottom:33px;">
               <div style="width: 80px;margin: 0 auto">
                 <img :src="c.userimg" alt="头像图片" height="60px" style="margin: 10px" width="60px">
               </div>
             </el-col>
-
             <!--评论内容及回复的显示区域-->
             <el-col :span="20">
               <div class="father" style="padding-bottom: 30px;">
                 <!--评论人的名字以及评论的内容-->
                 <div style="line-height: 40px;margin: 0;font-size: 18px">
-                  {{c.nickname}}：<p>{{c.content}}</p>
+                  {{c.nickname}}：<p style="margin-top: 0px;line-height: 40px"
+                                    v-html="c.commentcontent.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)">
+                  {{c.commentcontent}}</p>
                 </div>
-                <div style="margin: 0;font-size: 12px">
-                  <!--{{c.commentdate.slice(0,10)}}-->
+                <div style="margin: 0;font-size: 14px">
+                  {{c.commentdate.slice(0,10)}}
                   <el-popover
                     placement="top-start"
                     width="400"
@@ -58,18 +58,18 @@
                     <div>
                       <div>
                         <!--文本输入框-->
-                        <textarea class="text" rows="3" style="width: 370px" v-model="replayComment"></textarea>
+                        <textarea class="text" rows="3" style="width: 370px"
+                                  v-model="replayCommentContent"></textarea>
                         <img @click="showToggle()" class="face" src="../../assets/blogContent/face.png">
                       </div>
-                      <el-button @click="replay(c.nickname,c.fromuser,c.commentid)" size="mini"
-                                 style="margin: 5px 20px 0 0;float: right"
+                      <el-button @click="replayComment(c.nickname,c.fromuser,c.commentid)" size="mini"
+                                 style="margin: 5px 20px 0 0;float: right;color: white"
                                  type="primary">
                         回复{{c.nickname}}
                       </el-button>
                       <!-- 表情选择框-->
                       <Emotion :height="200" @emotion="handleEmotionReplay" v-if="isShow"></Emotion>
                     </div>
-
                     <div class="child"
                          plain size="mini"
                          style="margin-left: 15px"
@@ -81,14 +81,84 @@
 
                   <div @click="deleteCom(c.commentid)" class="child" plain
                        size="mini"
-                       v-if="bigPower||c.fromuser===loginuser"
                        style="margin-left:5px">
                     <img src="../../assets/blogContent/delete.png" style="width: 15px;height: 15px">
                   </div>
                 </div>
-
               </div>
+<!--*******************************************************************************************************************-->
+              <!--回复相关内容-->
+              <el-row>
+                <div v-for="(r,index) in answerComment">
+                  <div v-if="r.parentid===c.commentid">
+                    <el-col :span="4">
+                      <div style="padding: 0">
+                        <div style="padding-bottom: 30px;">
+                          <img :src="r.userimg"
+                               alt="图片" height="60px" style="margin: 10px" width="60px">
+                        </div>
+                      </div>
+                    </el-col>
+
+                    <el-col :span="20">
+                      <div class="father">
+                        <div style="padding-bottom: 50px;">
+                          <div style="height: 80px">
+                            <p style="line-height: 40px;margin: 0;font-size: 16px">
+                              {{r.nickname}} 回复：{{r.touser}}：
+                              <span v-html="r.commentcontent.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)">
+                              {{r.commentcontent}}
+                            </span>
+                            </p>
+                            <div style="line-height: 40px;margin: 0;font-size: 12px">
+                              {{r.commentdate.slice(0,10)}}
+                              <el-popover
+                                placement="top-start"
+                                width="400"
+                                trigger="hover">
+                                <p>回复：{{r.nickname}}</p>
+                                <!--回复输入框-->
+                                <div>
+                                  <div>
+                                    <!--文本输入框-->
+                                    <textarea class="text" rows="3" style="width: 370px"
+                                              v-model="replayAnswer"></textarea>
+                                    <img @click="showToggle()" class="face" src="../../assets/blogContent/face.png">
+                                  </div>
+                                  <el-button @click="replayAnswerAction(r.nickname,r.fromuser,c.commentid)" size="mini"
+                                             style="margin: 5px 20px 0 0;float: right"
+                                             type="primary">
+                                    回复{{r.nickname}}
+                                  </el-button>
+                                  <!-- 表情选择框-->
+                                  <Emotion :height="200" @emotion="handleEmotionReplayAnswer" v-if="isShow"></Emotion>
+                                </div>
+
+                                <div class="child"
+                                     plain size="mini"
+                                     style="margin-left: 15px"
+                                     slot="reference"
+                                     type="primary">
+                                  <img src="../../assets/blogContent/replay.png" style="width: 15px;height: 15px">
+                                </div>
+                              </el-popover>
+                              <div @click="deleteCom(r.commentid)" class="child" plain
+                                   size="mini"
+                                   style="margin-left: 5px">
+                                <img src="../../assets/blogContent/delete.png" style="width: 15px;height: 15px">
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </el-col>
+
+                  </div>
+                </div>
+              </el-row>
+
             </el-col>
+
 
           </el-row>
         </div>
@@ -118,7 +188,7 @@
 </template>
 
 <script>
-  import {getContentInfo} from "../../api";
+  import {deleteComment, getContentInfo, insertComment, listComment} from "../../api";
   import Emotion from '@/components/Emotion/index'
 
   export default {
@@ -127,10 +197,12 @@
       return {
         blogTitle: "",     //日志标题
         blogContent: "",     //日志内容
-        blogComment: [0],       //日志的评论数组
+        blogComment: [],       //日志的评论数组
         commentContent: "",    //发表评论的文本输入框
-        replayComment:"",      //
+        replayCommentContent: "",      //对评论得回复内容收集
         isShow: false,       //用来控制表情框的点击事件
+        answerComment: [],     //回复得数组
+        replayAnswer:""     //对回复的的回复的内容收集
       }
     },
 
@@ -144,15 +216,127 @@
     },
 
     methods: {
+      //对回复的回复点击事件
+      replayAnswerAction(nickname, fromuser, commentid){
+        let data = {
+          parentid: commentid,
+          toid: this.$route.query.contentid,
+          fromuser: localStorage.getItem("loginUser"),
+          touser: fromuser,
+          commentcontent: this.replayAnswer,
+        };
+        insertComment(data)
+          .then(res=>{
+            if (res.status===200){
+              console.log("对回复的回复的事件已发生");
+              console.log(res);
+              this.replayAnswer = "";
+              //添加成功之后调用方法
+              this.getBlogContent();
+              this.$notify({
+                title: '回复成功',
+                message: '您的回复很快就能被看到啦！',
+                type: 'success'
+              });
+            }
 
-      //删除评论及评论下的相关内容
-      deleteCom(){
-        console.log("删除评论的事件");
+          })
+          .catch(err=>{
+            console.log(err);
+          })
       },
 
-      //回复的的表情，点击表情转换成文字保存在输入框中，之后在保存在数据库中
+      //对评论的回复的的表情，点击表情转换成文字保存在输入框中，之后在保存在数据库中
+      handleEmotionReplayAnswer(i) {
+        this.replayAnswer += i
+      },
+
+      //对评论的回复
+      replayComment(nickname, fromuser, commentid) {
+        let data = {
+          parentid: commentid,
+          toid: this.$route.query.contentid,
+          fromuser: localStorage.getItem("loginUser"),
+          touser: fromuser,
+          commentcontent: this.replayCommentContent,
+        };
+        insertComment(data)
+          .then(res => {
+            if(res.status===200){
+              console.log(res);
+              this.replayCommentContent = "";
+              //添加成功之后调用方法
+              this.getBlogContent();
+              this.$notify({
+                title: '回复成功',
+                message: '您的回复很快就能被看到啦！',
+                type: 'success'
+              });
+            }else {
+              this.$notify({
+                title: '回复错误',
+                message: '内部服务器错误',
+                type: 'error'
+              });
+            }
+
+          })
+          .catch(err => {
+            console.log(err);
+          })
+      },
+
+      //删除评论及评论下的相关内容
+      deleteCom(id) {
+        let data = {
+          commentid: id
+        };
+        deleteComment(data)
+          .then(res => {
+            this.$confirm('确认删除?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning',
+              center: true
+            }).then((action) => {
+              if (action === 'confirm') {    //成功的回调
+                if (res.status === 200) {
+                  console.log("删除评论得接口触发");
+                  console.log(res);
+                  this.blogComment=[];
+                  this.answerComment=[];
+                  this.$notify({
+                    title: '删除评论成功',
+                    message: '您删除了该评论',
+                    type: 'success'
+                  });
+                  this.getBlogContent();
+                } else {
+                  this.$notify({
+                    title: '删除评论失败',
+                    message: '内部服务器失败',
+                    type: 'error'
+                  });
+                }
+              }
+            }).catch((err) => {
+              if (err === 'cancel') {       //失败的回调
+                this.$message({
+                  showClose: true,
+                  type: 'info',
+                  message: '已取消添加'
+                });
+              }
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          })
+      },
+
+      //对评论的回复的的表情，点击表情转换成文字保存在输入框中，之后在保存在数据库中
       handleEmotionReplay(i) {
-        this.replayComment += i
+        this.replayCommentContent += i
       },
 
       // 当点击表情图片时，将表情转换为相应的文字，并显示在评论的文本输入框上，进而保存在数据库中
@@ -170,7 +354,38 @@
 
       //点击发表评论按钮触发发表评论事件
       addComment() {
-        console.log("发表评论事件被触发");
+        let data = {
+          parentid: "0",
+          toid: this.$route.query.contentid,
+          fromuser: localStorage.getItem("loginUser"),
+          touser: this.$route.params.id,
+          commentcontent: this.commentContent,
+        };
+        insertComment(data)
+          .then(res => {
+            if (res.status === 200) {
+              console.log("日志添加接口触发");
+              console.log(res);
+              this.commentContent = "";
+              //添加成功之后调用方法
+              this.getBlogContent();
+              this.$notify({
+                title: '评论成功',
+                message: '您的评论很快就能被看到啦！',
+                type: 'success'
+              });
+            } else {
+              this.$notify({
+                title: '评论错误',
+                message: '内部服务器错误',
+                type: 'error'
+              });
+            }
+
+          })
+          .catch(err => {
+            console.log(err);
+          })
       },
 
       //当点击日志的图片按钮时用来是否显示表情
@@ -180,15 +395,63 @@
 
       //通过日志id查询日志的详情内容
       getBlogContent() {
-        let data = {
-          contentid: this.$route.query.contentid
+        //准备数据（日志的详情内容）
+        let data1 = {
+          contentid: this.$route.query.contentid,
+          categoryid: this.$route.query.categoryid
         };
-        getContentInfo(data)
+        //准备数据（日志内容的评论及其回复）
+        let data2 = {
+          toid: this.$route.query.contentid
+        };
+        //获取日志的详情内容
+        getContentInfo(data1)
           .then(res => {
-            console.log("得到该contentid下的内容");
+            console.log("得到该日志contentid下的内容");
             console.log(res);
-            this.blogTitle = res.object.Title;
-            this.blogContent = res.object.Content;
+            this.blogTitle = res.object.content.Title;
+            this.blogContent = res.object.content.Content;
+          })
+          .catch(err => {
+            console.log(err);
+          });
+
+        //获取日志的评论及回复数据
+        listComment(data2)
+          .then(res => {
+            console.log("得到日志评论的接口触发");
+            console.log(res);
+            this.blogComment=[];
+            this.answerComment=[];
+            //获取本篇日志下的评论
+            res.object.find(item => {
+              for (let i = 0; i < res.object.length; i++) {
+                if (item.parentid === "0") {
+                  if (!~this.blogComment.indexOf(item)) {
+                    this.blogComment.push(item);
+                  }
+                }
+              }
+            });
+
+            //提取数组中得commentid数据
+            const commentIds = res.object.map(item => ({
+              commentid: item.commentid
+            }));
+            //回复得数组
+            res.object.find(item => {
+              for (let i = 0; i < res.object.length; i++) {
+                if (item.parentid === commentIds[i].commentid) {
+                  if (!~this.answerComment.indexOf(item)) {
+                    this.answerComment.push(item)
+                  }
+                }
+              }
+            });
+            console.log("回复的数组");
+            console.log(this.answerComment);
+
+
           })
           .catch(err => {
             console.log(err);
@@ -201,6 +464,14 @@
 <style scoped>
   * {
     color: #303133;
+  }
+
+  .father .child {
+    display: none;
+  }
+
+  .father:hover .child {
+    display: inline;
   }
 
   .text {

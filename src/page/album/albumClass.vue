@@ -32,7 +32,7 @@
       //数据体
       data(){
         return{
-          albumCategory:[{classname:'das',num:9,classid:90909}],     //分类的数组
+          albumCategory:[],     //分类的数组
         }
       },
       //页面加载数据

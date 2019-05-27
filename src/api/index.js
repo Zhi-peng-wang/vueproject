@@ -55,6 +55,15 @@ export const listContentByCategory =data =>ajax('/api/listContentByCategory',dat
 //17.编辑日志
 export const editContent = data =>ajax('/api/editContent',data,"POST");
 
+//18.查看日志下的评论及其回复
+export const listComment = data =>ajax('/api/listComment',data,"POST");
+
+//19.添加日志的评论
+export const insertComment =data =>ajax('/api/insertComment',data,"POST");
+
+//20.删除日志下的评论或者回复
+export const deleteComment = data =>ajax('/api/deleteComment',data,"POST");
+
 
 
 

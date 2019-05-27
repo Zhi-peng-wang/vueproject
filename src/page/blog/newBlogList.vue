@@ -6,7 +6,7 @@
             <ul style="padding-left: 20px">
               <li v-for="(b,index) in allBlogList" :key="index">
                 <el-card shadow="hover">
-                  <router-link :to="{path:`/${$route.params.id}`+'/blog/blogContent',query:{contentid:b.contentid}}">
+                  <router-link :to="{path:`/${$route.params.id}`+'/blog/blogContent',query:{contentid:b.contentid,categoryid:b.categoryid}}">
                     <span class="content_color">{{b.title}}</span>
                     <span class="content_color" style="float: right;margin-right: 60px">{{b.contentdate.slice(0,10)}}-{{b.contentdate.slice(11,16)}}</span>
                   </router-link>
