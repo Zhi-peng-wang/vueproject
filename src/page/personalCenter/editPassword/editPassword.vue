@@ -23,7 +23,6 @@
 </template>
 
 <script>
-  import {editPassword} from "../../../api";
 
   export default {
     data() {
@@ -47,7 +46,6 @@
           callback();
         }
       };
-
       return {
         ruleForm: {
           inpass: '',
@@ -99,7 +97,6 @@
           }, 3000)
         }
       },
-
       //修改密码
       next(ruleForm) {
         this.$refs['ruleForm'].validate((valid) => {

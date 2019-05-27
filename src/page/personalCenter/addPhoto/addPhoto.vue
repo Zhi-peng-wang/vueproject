@@ -5,7 +5,7 @@
         <b>添加相册</b>
       </div>
       <div class="panel-body">
-        <el-form label-width="80px">
+        <el-form label-width="120px">
           <!--相片标题-->
           <el-form-item label="相片标题">
             <el-input v-model="albumTitle" placeholder="请输入相片标题"></el-input>
@@ -25,6 +25,15 @@
               <el-option v-for="(c2,index) in listCateTwoByCateOne"
                          :value="c2.CategoryID" :label="c2.CategoryName" :key="index"></el-option>
             </el-select>
+          </el-form-item>
+          <!--是否容许别人评论-->
+          <el-form-item label="是否允许评论">
+            <el-switch
+              style="display: block;line-height: 40px"
+              v-model="switchComment"
+              active-color="#13ce66"
+              inactive-color="#ff4949">
+            </el-switch>
           </el-form-item>
           <!--上传图片-->
           <el-form-item label="上传图片:">
@@ -69,6 +78,7 @@
             limitImage: 50,         //限制上传多少张
             fileData: [],           //上传图片的数组
             loading:"",             //上传时防止用户操作
+            switchComment:true,       //是否容许评论
           }
         },
       mounted(){

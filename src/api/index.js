@@ -19,9 +19,41 @@ export const listAllCategory = data =>ajax('/api/listAllCategory',data,"POST");
 //5.添加日志/相册
 export const insertContent = data =>ajax('/api/insertContent',data,"POST");
 
-//6.添加分类
+//6.添加日志/相册分类
 export const insertCategory =data =>ajax('/api/insertCategory',data,"POST");
 
+//7.删除日志/相册分类
+export const deleteCategoty = data =>ajax('/api/deleteCategory',data,"POST");
+
+//8.编辑日志/相册分类
+export const updateCategory = data =>ajax('/api/updateCategory',data,"POST");
+
+//9.得到留言的接口
+export const listMessage= data =>ajax('/api/listMessage',data,"POST");
+
+//10.添加留言接口
+export const insertMessage = data =>ajax('/api/insertMessage',data,"POST");
+
+//11.删除留言
+export const deleteMessage=data=>ajax('/api/deleteMessage',data,"POST");
+
+//12.得到全部日志的接口
+export const pageAllBlog=data=>ajax('/api/pageAllBlog',data);
+
+//13.个人中心的日志列表
+export const pageAllContentAndCategory =data =>ajax('/api/pageAllContentAndCategory',data,"POST");
+
+//14.根据contentid获取详细内容
+export const getContentInfo = data =>ajax('/api/getContentInfo',data,"POST");
+
+//15.个人中心日志列表的删除
+export const deleteContent = data =>ajax('/api/deleteContent',data,"POST");
+
+//16.根据日志的二级分类id拿到该分类下的所有数据
+export const listContentByCategory =data =>ajax('/api/listContentByCategory',data);
+
+//17.编辑日志
+export const editContent = data =>ajax('/api/editContent',data,"POST");
 
 
 

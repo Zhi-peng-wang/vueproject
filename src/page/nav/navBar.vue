@@ -65,7 +65,7 @@
       mounted() {
         //从vuex中获取激活状态
         this.activeIndex=this.$store.state.activeIndex;
-        headMsg({userid:this.$route.params.id})
+        headMsg({userid:localStorage.getItem("loginUser")})
           .then(res=>{
             console.log("导航条处打印信息");
             console.log(res);
@@ -90,6 +90,9 @@
             center:true
           }).then((action) => {
             if (action==='confirm'){    //成功的回调
+              //清除localstroge和sessionstroge里的所有数据
+              localStorage.clear();
+              sessionStorage.clear();
               this.$router.push({ path: '/' });
               this.$message({
                 showClose: true,

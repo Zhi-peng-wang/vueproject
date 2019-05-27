@@ -18,18 +18,27 @@ export default [
   {
     path:'/:id/homePage',
     name:'homePage',
-    component:App.components.homePage
+    component:App.components.homePage,
+    meta: {
+      requiresAuth: true      // 要求验证的页面,在此情况下其子页面也会被验证.
+    },
   },
   //点击主页上的个人资时跳转的页面
   {
     path:'/:id/personOutInfo',
     name:'personOutInfo',
-    component:App.components.personOutInfo
+    component:App.components.personOutInfo,
+    meta: {
+      requiresAuth: true      // 要求验证的页面,在此情况下其子页面也会被验证.
+    },
   },
   //点击主页上的更多访客时跳转的页面
   {
     path:'/:id/visitCenter',
-    component:App.components.visitCenter
+    component:App.components.visitCenter,
+    meta: {
+      requiresAuth: true      // 要求验证的页面,在此情况下其子页面也会被验证.
+    },
   },
   //修改密码页面路由
   {
@@ -48,6 +57,16 @@ export default [
       {
         path:'',
         component:App.components.newBlogList
+      },
+      //日志的详情内容
+      {
+        path:'blogContent',
+        component:App.components.blogContent
+      },
+      //日志列表
+      {
+        path:'blogList',
+        component:App.components.blogList
       }
     ]
   },
@@ -109,6 +128,11 @@ export default [
       {
         path:'addPhoto',
         component:App.components.addPhoto
+      },
+      //编辑日志路由
+      {
+        path:'editBlog',
+        component:App.components.editBlog
       }
     ]
   },
@@ -124,13 +148,21 @@ export default [
       {
         path:'',
         component:App.components.albumClass
+      },
+      //相册分类下的相册列表
+      {
+        path:'albumClassList',
+        component:App.components.albumClassList
       }
     ]
   },
   //留言页面
   {
     path:'/:id/leaveMessage',
-    component:App.components.leaveMessage
+    component:App.components.leaveMessage,
+    meta: {
+      requiresAuth: true      // 要求验证的页面,在此情况下其子页面也会被验证.
+    },
   }
 ]
 

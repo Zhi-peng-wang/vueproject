@@ -26,6 +26,10 @@ import leaveMessage from '@/page/leaveMessage/leaveMessage'
 import personOutInfo from '@/page/homePage/personOutInfo/personOutInfo'
 import visitCenter from '@/page/homePage/visitCenter/visitCenter'
 import editPassword from '@/page/personalCenter/editPassword/editPassword'
+import blogContent from '@/page/blog/blogContent'
+import blogList from '@/page/blog/blogList'
+import editBlog from '@/page/personalCenter/editBlog/editBlog'
+import albumClassList from '@/page/album/albumClassList'
 
 export default {
   name: 'App',
@@ -33,7 +37,8 @@ export default {
     signUp,signIn,homePage,blog,personalCenter,newBlogList,
     personData,allBlogList,blogCategory,allAlbumList,albumCategory,
     myComment,myParticipate,addBlog,addPhoto,album,albumClass,
-    leaveMessage,personOutInfo,visitCenter,editPassword
+    leaveMessage,personOutInfo,visitCenter,editPassword,blogContent,
+    blogList,editBlog,albumClassList
   },
   provide () {
     return {
@@ -57,6 +62,9 @@ export default {
 </script>
 
 <style>
+  li{
+    list-style: none;
+  }
   .container {
     margin-right: auto;
     margin-left: auto;

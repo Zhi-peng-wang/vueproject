@@ -65,9 +65,8 @@
 </template>
 
 <script>
-  import {insertCategory, listAllCategory} from "../../../api";
+  import {deleteCategoty, insertCategory, listAllCategory, updateCategory} from "../../../api";
     export default {
-      inject: ['reload'],
       data(){
           return{
             listCategoryOne:[],        //一级分类数组
@@ -103,7 +102,7 @@
             }
           }
         },
-      mounted(){
+      created(){
         this.categoryOne.OrderCategoryOne=sessionStorage.getItem("sOrderCategoryOne");
         this.categoryOne.CategoryOneName=sessionStorage.getItem("sOneCategoryName");
         this.categoryOneId=sessionStorage.getItem("sCategoryOneId");
@@ -111,37 +110,49 @@
         this.categoryTwo.OrderCategoryTwo=sessionStorage.getItem("sOrderCategoryTwo");
         this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sTwoCategoryName");
         this.categoryTwoId=sessionStorage.getItem("sCategoryTwoId");
-
-        //为了得到分类的数据，准备数据
-        let data={
-          userid:this.$route.params.id,
-          categorytype:"1"
-        };
-        //得到一级分类的接口
-        listAllCategory(data)
-          .then(res=>{
-            console.log("执行获取分类的接口");
-            console.log(res);
-            //  将值赋值给result,然后进行过滤
-            let result=res.object;
-            //准备一级分类的数据
-            result.map(item=>{
-              if (item.Depth===1&&item.ParentID==="0"){
-                return this.listCategoryOne.push(item)
-              }
-            });
-            //准备二级分类的数据
-            result.map(item => {
-              if (item.Depth === 2) {
-                return this.listCategoryTwo.push(item)
-              }
-            });
-          })
-          .catch(err=>{
-            console.log(err);
-          })
+      },
+      mounted(){
+        this.categoryOne.OrderCategoryOne="";
+        this.categoryOne.CategoryOneName="";
+        this.categoryTwo.OrderCategoryTwo="";
+        this.categoryTwo.CategoryTwoName="";
+        //得到一级二级分类的数据
+        this.getListAllCategory()
       },
       methods:{
+        //得到一级二级分类数据
+        getListAllCategory(){
+          //为了得到分类的数据，准备数据
+          let data={
+            userid:localStorage.getItem("loginUser"),
+            categorytype:"B"
+          };
+          //执行分类的接口
+          listAllCategory(data)
+            .then(res=>{
+              console.log("执行获取分类的接口");
+              console.log(res);
+              this.listCategoryOne=[];
+              this.listCategoryTwo=[];
+              //  将值赋值给result,然后进行过滤
+              let result=res.object;
+              //准备一级分类的数据
+              result.map(item=>{
+                if (item.Depth===1){
+                  return this.listCategoryOne.push(item)
+                }
+              });
+              //准备二级分类的数据
+              result.map(item => {
+                if (item.Depth === 2) {
+                  return this.listCategoryTwo.push(item)
+                }
+              });
+            })
+            .catch(err=>{
+              console.log(err);
+            })
+        },
         // 一级栏目添加弹框
         confirmCategoryOne(categoryOne){
           this.$refs[categoryOne].validate((valid) => {
@@ -185,18 +196,18 @@
         addCategoryOne(){
           console.log("一级栏目的点击事件");
           let data={
-            userid: localStorage.getItem("loginUser"),
-            categoryname:this.categoryOne.CategoryOneName,
-            parentid:"1",
-            ordercategory:this.categoryOne.OrderCategoryOne,
-            depth:"1",
-            categorytype:"B"
+            userid: localStorage.getItem("loginUser"),            //传输个人中心的id
+            categoryname:this.categoryOne.CategoryOneName,        //分类名称
+            parentid:"1",                                           //判断是一级还是二级分类
+            ordercategory:this.categoryOne.OrderCategoryOne,      //分类排序
+            depth:"1",                                                //一级栏目
+            categorytype:"B"                                        //类型
           };
           console.log(data);
           insertCategory(data)
             .then(res=>{
               console.log(res);
-              if (true){
+              if (res.status===200){
                 sessionStorage.setItem("sOrderCategoryOne", this.categoryOne.OrderCategoryOne);
                 sessionStorage.setItem("sOneCategoryName", this.categoryOne.CategoryOneName);
                 this.$message({
@@ -204,7 +215,9 @@
                   message: '添加成功！',
                   type: 'success'
                 });
-                this.reload();
+                this.listCategoryOne=[];
+                this.listCateTwoByCateOne=[];
+                this.getListAllCategory();
               }
               if (res.status===400){
                 this.$message({
@@ -262,18 +275,17 @@
           console.log("二级栏目的点击事件");
           let data={
             userid: localStorage.getItem("loginUser"),
-            classname:this.categoryTwo.CategoryTwoName,
+            categoryname:this.categoryTwo.CategoryTwoName,
             parentid:this.categoryOneId,
-            orderclass:this.categoryTwo.OrderCategoryTwo,
+            ordercategory:this.categoryTwo.OrderCategoryTwo,
             depth:"2",
-            url:this.categoryTwo.CategoryTwoName,
-            typeid:"1"
+            categorytype:"B",
           };
           console.log(data);
-          addClass(data)
+          insertCategory(data)
             .then(res=>{
               console.log(res);
-              if (res.status==200){
+              if (res.status===200){
                 sessionStorage.setItem("sOrderCategoryTwo", this.categoryTwo.OrderCategoryTwo);
                 sessionStorage.setItem("sTwoCategoryName", this.categoryTwo.CategoryTwoName);
                 this.$message({
@@ -281,9 +293,11 @@
                   message: '添加成功！',
                   type: 'success'
                 });
-                this.reload();
+                this.listCategoryOne=[];
+                this.listCateTwoByCateOne=[];
+                this.getListAllCategory()
               }
-              if (res.status==400){
+              if (res.status===400){
                 this.$message({
                   showClose: true,
                   message: '二级分类名称已存在，请重新添加！',
@@ -305,10 +319,11 @@
           sessionStorage.setItem("sOrderCategoryOne", OrderCategoryOne);
           this.categoryOne.OrderCategoryOne=sessionStorage.getItem("sOrderCategoryOne");
 
+          sessionStorage.setItem("sOldOneCategoryName",categoryName);
           sessionStorage.setItem("sOneCategoryName", categoryName);
           this.categoryOne.CategoryOneName=sessionStorage.getItem("sOneCategoryName");
 
-          sessionStorage.setItem("sCategoryOneId", classid);
+          sessionStorage.setItem("sCategoryOneId", categoryId);
           this.categoryOneId=sessionStorage.getItem("sCategoryOneId");
 
           sessionStorage.setItem("sAobj", obj);
@@ -336,9 +351,10 @@
           //使用session存储
           sessionStorage.setItem("sOrderCategoryTwo", OrderCategoryTwo);
           this.categoryTwo.OrderCategoryTwo=sessionStorage.getItem("sOrderCategoryTwo");
+          sessionStorage.setItem("sOldTwoCategoryName", categoryName);
           sessionStorage.setItem("sTwoCategoryName", categoryName);
           this.categoryTwo.CategoryTwoName=sessionStorage.getItem("sTwoCategoryName");
-          sessionStorage.setItem("sCategoryTwoId", classid);
+          sessionStorage.setItem("sCategoryTwoId", categoryId);
           this.categoryTwoId=sessionStorage.getItem("sCategoryTwoId");
         },
         // 一级栏目删除弹框
@@ -383,11 +399,11 @@
         },
         // 一级栏目删除点击事件
         deleteCategoryOne(){
-          deleteClass({categoryId:this.categoryOneId})
+          deleteCategoty({categoryid:this.categoryOneId})
             .then(res=>{
               console.log("一级分类删除按钮被点击");
               console.log(res);
-              if (res.status==200){
+              if (res.status===200){
                 sessionStorage.setItem("sOrderCategoryOne", "");
                 sessionStorage.setItem("sOneCategoryName", "");
                 sessionStorage.setItem("sOneCategoryId", "");
@@ -396,9 +412,13 @@
                   message: '删除成功！',
                   type: 'success'
                 });
-                this.reload();
+                this.categoryOne.CategoryOneName="";
+                this.categoryOne.OrderCategoryOne="";
+                this.listCategoryOne=[];
+                this.listCateTwoByCateOne=[];
+                this.getListAllCategory()
               }
-              if (res.status==400){
+              if (res.status===400){
                 this.$message({
                   showClose: true,
                   message: '存在二级分类无法删除,请先删除二级分类！',
@@ -452,10 +472,10 @@
         // 二级栏目删除点击事件
         deleteCategoryTwo(){
           console.log("二级分类删除按钮被点击");
-          deleteClass({categoryId:this.categoryTwoId})
+          deleteCategoty({categoryid:this.categoryTwoId})
             .then(res=>{
               console.log(res);
-              if (res.status==200){
+              if (res.status===200){
                 sessionStorage.setItem("sOrderCategoryTwo", "");
                 sessionStorage.setItem("sTwoCategoryName", "");
                 this.$message({
@@ -463,9 +483,13 @@
                   message: '删除成功！',
                   type: 'success'
                 });
-                this.reload();
+                this.listCategoryOne=[];
+                this.listCateTwoByCateOne=[];
+                this.categoryTwo.CategoryTwoName="";
+                this.categoryTwo.OrderCategoryTwo="";
+                this.getListAllCategory()
               }
-              if (res.status==400){
+              if (res.status===400){
                 this.$message({
                   showClose: true,
                   message: '二级分类下有日志,请先删除日志！',
@@ -519,14 +543,18 @@
         // 一级栏目编辑点击事件
         editCategoryOne(){
           let data={
-            categoryId:this.categoryOneId,
-            orderclass:this.categoryOne.OrderCategoryOne,
-            classname:this.categoryOne.CategoryOneName
+            categoryid:this.categoryOneId,
+            ordercategory:this.categoryOne.OrderCategoryOne,
+            oldcategoryname:sessionStorage.getItem("sOldOneCategoryName"),
+            newcategoryname:this.categoryOne.CategoryOneName,
+            categorytype:"B",
+            userid:localStorage.getItem("loginUser")
           };
-          editClass(data)
+          console.log(data);
+          updateCategory(data)
             .then(res=>{
               console.log(res);
-              if (res.status==200){
+              if (res.status===200){
                 this.$message({
                   showClose: true,
                   message: '编辑成功！',
@@ -543,9 +571,9 @@
 
                 sessionStorage.setItem("sAobj", this.selectedOption);
                 this.selectedOption=sessionStorage.getItem("sAobj");
-                this.reload()
+                this.getListAllCategory()
               }
-              if (res.status==400){
+              if (res.status===400){
                 this.$message({
                   showClose: true,
                   message: '一级分类名称已存在！',
@@ -600,14 +628,17 @@
         // 二级栏目编辑点击事件
         editCategoryTwo(){
           let data={
-            categoryId:this.categoryTwoId,
-            orderclass:this.categoryTwo.OrderCategoryTwo,
-            classname:this.categoryTwo.CategoryTwoName
+            categoryid:this.categoryTwoId,
+            ordercategory:this.categoryTwo.OrderCategoryTwo,
+            oldcategoryname:sessionStorage.getItem("sOldOneCategoryName"),
+            newcategoryname:this.categoryTwo.CategoryTwoName,
+            categorytype:"B",
+            userid:localStorage.getItem("loginUser")
           };
-          editClass(data)
+          updateCategory(data)
             .then(res=>{
               console.log(res);
-              if (res.status==200){
+              if (res.status===200){
                 this.$message({
                   showClose: true,
                   message: '编辑成功！',
@@ -624,9 +655,9 @@
 
                 sessionStorage.setItem("sBobj", this.selectedOption);
                 this.selectedOption=sessionStorage.getItem("sBobj");
-                this.reload()
+                this.getListAllCategory()
               }
-              if (res.status==400){
+              if (res.status===400){
                 this.$message({
                   showClose: true,
                   message: '二级分类名称已存在！',
