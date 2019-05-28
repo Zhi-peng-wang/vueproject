@@ -64,6 +64,11 @@ export const insertComment =data =>ajax('/api/insertComment',data,"POST");
 //20.删除日志下的评论或者回复
 export const deleteComment = data =>ajax('/api/deleteComment',data,"POST");
 
+//21.个人中心添加图片
+export const insertPhoto = data =>ajax('/api/insertPhoto',data,"POST");
+
+//22.个人中心中相册列表下得数据
+export const listCategoryPhotoTwo = data =>ajax('/api/listCategoryPhotoTwo',data,"POST");
 
 
 

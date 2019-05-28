@@ -137,7 +137,7 @@
                       message: '欢迎您的到来!'
                     });
                     //跳转到登录页并刷新
-                    location.href = "/login"
+                    location.href = "/"
                   }).catch(() => {
                     this.$message({
                       type: 'info',

@@ -109,6 +109,11 @@ export default [
         path:'albumCategory',
         component:App.components.albumCategory
       },
+      //相册分类下得所有图片
+      {
+        path:'albumCategoryList',
+        component:App.components.albumCategoryList
+      },
       //我评论的路由
       {
         path:'myComment',
@@ -153,7 +158,7 @@ export default [
       {
         path:'albumClassList',
         component:App.components.albumClassList
-      }
+      },
     ]
   },
   //留言页面

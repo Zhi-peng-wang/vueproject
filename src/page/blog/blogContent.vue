@@ -86,7 +86,7 @@
                   </div>
                 </div>
               </div>
-<!--*******************************************************************************************************************-->
+              <!--*******************************************************************************************************************-->
               <!--回复相关内容-->
               <el-row>
                 <div v-for="(r,index) in answerComment">
@@ -105,10 +105,10 @@
                         <div style="padding-bottom: 50px;">
                           <div style="height: 80px">
                             <p style="line-height: 40px;margin: 0;font-size: 16px">
-                              {{r.nickname}} 回复：{{r.touser}}：
+                              {{r.nickname}} 回复：{{r.tousername}}：
                               <span v-html="r.commentcontent.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)">
-                              {{r.commentcontent}}
-                            </span>
+                                {{r.commentcontent}}
+                              </span>
                             </p>
                             <div style="line-height: 40px;margin: 0;font-size: 12px">
                               {{r.commentdate.slice(0,10)}}
@@ -152,14 +152,10 @@
                         </div>
                       </div>
                     </el-col>
-
                   </div>
                 </div>
               </el-row>
-
             </el-col>
-
-
           </el-row>
         </div>
 
@@ -202,7 +198,7 @@
         replayCommentContent: "",      //对评论得回复内容收集
         isShow: false,       //用来控制表情框的点击事件
         answerComment: [],     //回复得数组
-        replayAnswer:""     //对回复的的回复的内容收集
+        replayAnswer: ""     //对回复的的回复的内容收集
       }
     },
 
@@ -217,17 +213,22 @@
 
     methods: {
       //对回复的回复点击事件
-      replayAnswerAction(nickname, fromuser, commentid){
+      replayAnswerAction(nickname, fromuser, commentid) {
+
+        localStorage.removeItem("loginUserName");
+        localStorage.setItem("loginUserName",nickname);
+
         let data = {
           parentid: commentid,
           toid: this.$route.query.contentid,
           fromuser: localStorage.getItem("loginUser"),
           touser: fromuser,
           commentcontent: this.replayAnswer,
+          tousername:localStorage.getItem("loginUserName")
         };
         insertComment(data)
-          .then(res=>{
-            if (res.status===200){
+          .then(res => {
+            if (res.status === 200) {
               console.log("对回复的回复的事件已发生");
               console.log(res);
               this.replayAnswer = "";
@@ -241,7 +242,7 @@
             }
 
           })
-          .catch(err=>{
+          .catch(err => {
             console.log(err);
           })
       },
@@ -259,10 +260,11 @@
           fromuser: localStorage.getItem("loginUser"),
           touser: fromuser,
           commentcontent: this.replayCommentContent,
+          tousername:nickname
         };
         insertComment(data)
           .then(res => {
-            if(res.status===200){
+            if (res.status === 200) {
               console.log(res);
               this.replayCommentContent = "";
               //添加成功之后调用方法
@@ -272,7 +274,7 @@
                 message: '您的回复很快就能被看到啦！',
                 type: 'success'
               });
-            }else {
+            } else {
               this.$notify({
                 title: '回复错误',
                 message: '内部服务器错误',
@@ -303,8 +305,8 @@
                 if (res.status === 200) {
                   console.log("删除评论得接口触发");
                   console.log(res);
-                  this.blogComment=[];
-                  this.answerComment=[];
+                  this.blogComment = [];
+                  this.answerComment = [];
                   this.$notify({
                     title: '删除评论成功',
                     message: '您删除了该评论',
@@ -360,10 +362,11 @@
           fromuser: localStorage.getItem("loginUser"),
           touser: this.$route.params.id,
           commentcontent: this.commentContent,
+          tousername:localStorage.getItem("loginUserName")
         };
         insertComment(data)
           .then(res => {
-            if (res.status === 200) {
+            if (res.status===200) {
               console.log("日志添加接口触发");
               console.log(res);
               this.commentContent = "";
@@ -374,9 +377,9 @@
                 message: '您的评论很快就能被看到啦！',
                 type: 'success'
               });
-            } else {
+            }else {
               this.$notify({
-                title: '评论错误',
+                title: '评论失败',
                 message: '内部服务器错误',
                 type: 'error'
               });
@@ -421,8 +424,8 @@
           .then(res => {
             console.log("得到日志评论的接口触发");
             console.log(res);
-            this.blogComment=[];
-            this.answerComment=[];
+            this.blogComment = [];
+            this.answerComment = [];
             //获取本篇日志下的评论
             res.object.find(item => {
               for (let i = 0; i < res.object.length; i++) {
@@ -433,7 +436,6 @@
                 }
               }
             });
-
             //提取数组中得commentid数据
             const commentIds = res.object.map(item => ({
               commentid: item.commentid
@@ -450,8 +452,6 @@
             });
             console.log("回复的数组");
             console.log(this.answerComment);
-
-
           })
           .catch(err => {
             console.log(err);

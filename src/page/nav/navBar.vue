@@ -75,6 +75,8 @@
             this.nickname=res.object.nickname;
           //  获取个性签名
             this.sign=res.object.sign;
+            //存名字
+            localStorage.setItem("loginUserName",res.object.nickname);
           })
           .catch(err=>{
             console.log(err);

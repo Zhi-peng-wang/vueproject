@@ -30,6 +30,7 @@ import blogContent from '@/page/blog/blogContent'
 import blogList from '@/page/blog/blogList'
 import editBlog from '@/page/personalCenter/editBlog/editBlog'
 import albumClassList from '@/page/album/albumClassList'
+import albumCategoryList from '@/page/personalCenter/personAlbum/albumCategoryList'
 
 export default {
   name: 'App',
@@ -38,7 +39,7 @@ export default {
     personData,allBlogList,blogCategory,allAlbumList,albumCategory,
     myComment,myParticipate,addBlog,addPhoto,album,albumClass,
     leaveMessage,personOutInfo,visitCenter,editPassword,blogContent,
-    blogList,editBlog,albumClassList
+    blogList,editBlog,albumClassList,albumCategoryList
   },
   provide () {
     return {

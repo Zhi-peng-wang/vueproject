@@ -61,7 +61,7 @@
 </template>
 
 <script>
-    import {listAllCategory} from "../../../api";
+  import {insertPhoto, listAllCategory} from "../../../api";
 
     export default {
         data(){
@@ -82,34 +82,8 @@
           }
         },
       mounted(){
-        //为了得到分类的数据，准备数据
-        let data={
-          userid:this.$route.params.id,
-          categorytype:"2"
-        };
-        //得到一级分类的接口
-        listAllCategory(data)
-          .then(res=>{
-            console.log("执行获取分类的接口");
-            console.log(res);
-            //  将值赋值给result,然后进行过滤
-            let result=res.object;
-            //准备一级分类的数据
-            result.map(item=>{
-              if (item.Depth===1&&item.ParentID===0){
-                return this.listCategoryOne.push(item)
-              }
-            });
-            //准备二级分类的数据
-            result.map(item => {
-              if (item.Depth === 2) {
-                return this.listCategoryTwo.push(item)
-              }
-            });
-          })
-          .catch(err=>{
-            console.log(err);
-          })
+          this.getCategoryData();
+
       },
       methods:{
         // 自定义上传方法
@@ -161,13 +135,15 @@
           }
           formData.append("userid", localStorage.getItem("loginUser"));
           formData.append("title", this.albumTitle);
-          formData.append("classid", this.dataClass.classB);
+          formData.append("status", this.switchComment);
+          formData.append("contenttype", "P");
+          formData.append("categoryid", this.classData.selectCategoryTwo);
           console.log(formData);
 
           console.log("上传图片的点击事件已触发");
           console.log(this.fileData);
           // 上传方法接口
-          addPhoto(formData)
+          insertPhoto(formData)
             .then(res => {
               if(res.status===200){
                 // 图片上传成功，清除定时器
@@ -177,7 +153,7 @@
                   message: '图片上传成功!',
                   type: 'success'
                 });
-                this.$router.push(`/${this.$route.params.id}`+'/home_page/albumAll')
+                this.$router.push(`/${this.$route.params.id}`+'/personalCenter/allAlbumList')
               }
               console.log(formData);
               console.log('上传图片接口-数据成功。', res)
@@ -207,6 +183,37 @@
           });
           console.log(this.listCateTwoByCateOne);
         },
+        //得到分类数据
+        getCategoryData(){
+          //为了得到分类的数据，准备数据
+          let data={
+            userid:this.$route.params.id,
+            categorytype:"P"
+          };
+          //得到一级分类的接口
+          listAllCategory(data)
+            .then(res=>{
+              console.log("执行获取分类的接口");
+              console.log(res);
+              //  将值赋值给result,然后进行过滤
+              let result=res.object;
+              //准备一级分类的数据
+              result.map(item=>{
+                if (item.Depth===1){
+                  return this.listCategoryOne.push(item)
+                }
+              });
+              //准备二级分类的数据
+              result.map(item => {
+                if (item.Depth === 2) {
+                  return this.listCategoryTwo.push(item)
+                }
+              });
+            })
+            .catch(err=>{
+              console.log(err);
+            })
+        }
       }
     }
 </script>
