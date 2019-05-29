@@ -12,7 +12,7 @@
         <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">
           全选
         </el-checkbox>
-        <el-button type="danger"  style="margin-left: 655px" @click="deletePhoto()" :disabled="checkedAlbums.length===0">
+        <el-button type="danger"  style="margin-left: 655px" @click="confirmDeletePhoto()" :disabled="checkedAlbums.length===0">
           删除
         </el-button>
         <el-row>
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-    import {listContentByCategory} from "../../../api";
+  import {deleteContent, listContentByCategory} from "../../../api";
 
     export default {
         data(){
@@ -68,6 +68,47 @@
         this.getPhotoList()
       },
       methods:{
+
+        //删除相册列表的相关内容
+        confirmDeletePhoto(){
+          this.$confirm('此操作将永久删除这些日志, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then((action) => {
+            if (action === 'confirm') {     //确认的回调
+              let data =this.checkedAlbums.map(item=>({
+                contentid:item.contentid
+              }));
+              deleteContent(data)
+                .then(res=>{
+                  console.log("相册列表的删除按钮已触发");
+                  console.log(res);
+                  this.checkedAlbums=[];
+                  this.getPhotoList();
+                })
+                .catch(err=>{
+                  console.log(err);
+                });
+              console.log(this.checkedAlbums);
+              this.$message({
+                type: 'success',
+                message: '删除成功!',
+                showClose:true
+              });
+            }
+          }).catch((err) => {
+            if (err === 'cancel') {     //取消的回调
+              this.$message({
+                type: 'info',
+                message: '已取消删除',
+                showClose:true
+              });
+            }
+          });
+        },
+
         //分页得相关操作
         handleCurrentChange(val) {
           console.log(`当前页: ${val-1}`);

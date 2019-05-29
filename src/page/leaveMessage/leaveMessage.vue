@@ -276,7 +276,7 @@
           //重新调用方法得到相应页上的内容
           this.getListMessage()
         },
-        //得到该用户的全部数据
+        //得到该用户的留言的全部数据
         getListMessage(){
           //将个人中心的值赋值上
           this.personId=localStorage.getItem("loginUser");
