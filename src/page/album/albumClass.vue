@@ -2,17 +2,17 @@
   <div class="container">
     <div>
       <el-row>
-        <el-col :span="6"  v-for="(t,index) in albumCategory" :key="index"`>
+        <el-col :span="6"  v-for="(t,index) in albumCategoryList" :key="index"`>
             <ul>
               <li>
                 <router-link :to="{path:`/${$route.params.id}`+'/album/albumClassList',query:{classid:t.classid}}">
                   <div class="fj_img">
                     <div>
-                      <img :src="t.url" width="200px" height="200px">
+                      <img :src="'/api'+t.Remark" width="200px" height="200px">
                     </div>
                   </div>
                   <div class="fj_title">
-                    <h4>{{t.classname}}
+                    <h4>{{t.CategoryName}}
                       (<el-badge :value="t.num" style="margin-top: 8px">
                       </el-badge>张)
                     </h4>
@@ -28,11 +28,13 @@
 </template>
 
 <script>
+    import {listCategoryPhotoTwo} from "../../api";
+
     export default {
       //数据体
       data(){
         return{
-          albumCategory:[],     //分类的数组
+          albumCategoryList:[],     //分类的数组
         }
       },
       //页面加载数据
@@ -44,7 +46,29 @@
       methods:{
         //得到相册的二级分类
         getTwoCategoryAlbum(){
-          console.log("得到相册的二级分类");
+          let data={
+            userid:this.$route.params.id
+          };
+          listCategoryPhotoTwo(data)
+            .then(res=>{
+              console.log(res);
+              this.albumCategoryList=res.object;
+              // this.albumCategory=res.object;
+              // if (res.status===200){
+              //   console.log("打印二级分类相册列表数据");
+              //   console.log(res);
+              //
+              // }else {
+              //   this.$notify({
+              //     title: '请求失败',
+              //     message: '内部服务器发生错误！',
+              //     type: 'error'
+              //   });
+              // }
+            })
+            .catch(err=>{
+              console.log(err);
+            })
         }
       }
     }

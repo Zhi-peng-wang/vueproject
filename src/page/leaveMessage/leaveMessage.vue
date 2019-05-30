@@ -92,7 +92,7 @@
                     <!--右侧内容区域-->
                     <el-col :span="18">
                       <el-row>
-                        {{r.nickname}} 回复：{{m.nickname}}
+                        {{r.nickname}} 回复：{{r.tousername}}
                       </el-row>
                       <el-row>
                         <p v-html="r.msgcontent.replace(/\#[\u4E00-\u9FA5]{1,3}\;/gi, emotion)">{{r.msgcontent}}</p>
@@ -113,7 +113,7 @@
                               <textarea class="text" rows="3" style="width: 370px" v-model="replayMsgByMsg"></textarea>
                               <img @click="showToggleReplay()" class="face" src="../../assets/leaveMessage/face.png">
                             </div>
-                            <el-button @click="replayMsgInfoByMsg(m.msgid,r.userid)" size="mini"
+                            <el-button @click="replayMsgInfoByMsg(r.nickname,m.msgid,r.userid)" size="mini"
                                        style="margin: 5px 20px 0 0;float: right"
                                        type="primary">
                               回复{{r.nickname}}
@@ -222,7 +222,11 @@
             })
         },
         //回复留言的回复的方法
-        replayMsgInfoByMsg(msgid,userid){
+        replayMsgInfoByMsg(nickname,msgid,userid){
+
+          localStorage.removeItem("loginUserName");
+          localStorage.setItem("loginUserName",nickname);
+
           //准备数据
           let data ={
             fromuser:localStorage.getItem("loginUser"),      //来自谁的留言
@@ -230,8 +234,10 @@
             userid:this.$route.params.id,        //谁的留言板
             msgtype:"1",      //是留言还是留言的回复
             msgcontent:this.replayMsgByMsg,    //留言的内容
-            msgparentid:msgid
+            msgparentid:msgid,
+            tousername:localStorage.getItem("loginUserName")
           };
+          console.log(data);
           insertMessage(data)
             .then(res=>{
               console.log(res);
@@ -253,7 +259,8 @@
             userid:this.$route.params.id,        //谁的留言板
             msgtype:"1",      //是留言还是留言的回复
             msgcontent:this.replayMsg,    //留言的内容
-            msgparentid:msgid
+            msgparentid:msgid,
+            tousername:localStorage.getItem("loginUserName"),
           };
           insertMessage(data)
             .then(res=>{
@@ -336,7 +343,8 @@
             userid:this.$route.params.id,        //谁的留言板
             msgtype:"0",      //是留言还是留言的回复
             msgcontent:this.leaveMsg,    //留言的内容
-            msgparentid:"0"
+            msgparentid:"0",
+            tousername:localStorage.getItem("loginUserName"),
           };
           console.log(data);
           insertMessage(data)

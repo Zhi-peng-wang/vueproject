@@ -3,11 +3,11 @@
     <div class="nav_bar">
       <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal">
         <el-menu-item class="leftItem">
-          <img :src="imageUrl" width="50px" height="50px">
+          <img :src="'/api'+imageUrl" width="50px" height="50px">
         </el-menu-item>
         <el-menu-item class="leftItem">
           <p class="nameInfo" style="font-weight: 900;font-size: 20px">
-            {{nickname}}
+            {{mainnickname}}
           </p>
           <p class="nameInfo">
             {{sign}}
@@ -58,8 +58,9 @@
         return{
           imageUrl:"",      //头像路径
           activeIndex: "",  //默认激活导航栏
-          nickname:"",      //网名
+          nickname:"",      //个人中心处的名字
           sign:"",          //个性签名
+          mainnickname:"",      //左边的名字
         }
       },
       mounted() {
@@ -69,17 +70,22 @@
           .then(res=>{
             console.log("导航条处打印信息");
             console.log(res);
-            //获取路径
-            this.imageUrl=res.object.userimg;
             //获取网名
             this.nickname=res.object.nickname;
-          //  获取个性签名
-            this.sign=res.object.sign;
             //存名字
             localStorage.setItem("loginUserName",res.object.nickname);
           })
           .catch(err=>{
             console.log(err);
+          });
+
+        headMsg({userid:this.$route.params.id})
+          .then(res=>{
+            this.mainnickname=res.object.nickname;
+            //获取个性签名
+            this.sign=res.object.sign;
+            //获取路径
+            this.imageUrl=res.object.userimg;
           })
       },
       methods:{
